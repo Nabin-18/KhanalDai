@@ -1,7 +1,7 @@
 import { FaStar } from "react-icons/fa";
 import { useState } from "react";
 import Button from "./Button";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import allProducts from "../assets/allProduct";
 import { useContext } from "react";
 import Context from "../context/Context";
@@ -89,12 +89,14 @@ const ProductDisplay = () => {
           />
         )}
         <hr />
-        <div className="flex gap-2 items-center p-2 m-auto ">
+        <div className="flex gap-2 items-center p-2 m-auto">
           {new Array(4).fill(null).map((_, index) => (
             <img
               key={index}
               src={productData.image}
-              className="h-20 w-20 cursor-pointer border"
+              className={`h-20 w-20 cursor-pointer border ${
+                index > 0 ? "hidden sm:block" : "" // Hide all except the first on small screens
+              }`}
               alt={`Thumbnail ${index + 1}`}
             />
           ))}

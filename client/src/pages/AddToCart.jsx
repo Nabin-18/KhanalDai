@@ -8,7 +8,7 @@ const AddToCart = () => {
 
   return (
     <div className="shadow-xl">
-      <div className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 justify-between w-[80%] m-auto mt-6 font-semibold">
+      <div className=" grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 justify-between w-[80%] m-auto  mt-6 font-semibold">
         <p>Product</p>
         <p>Title</p>
         <p>Price</p>
@@ -16,21 +16,21 @@ const AddToCart = () => {
         <p>Total</p>
         <p>Remove</p>
       </div>
-      <hr className="m-auto w-[80%] divide-red-600  mt-6" />
+      <hr className="m-auto w-[98%] divide-red-600  mt-6 lg:w-[80%]" />
       {cartItems.map((item) => (
         <div
           key={item.id}
-          className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-2 justify-between w-[80%] m-auto items-center mt-4 p-2"
+          className=" grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-2 justify-between w-[80%] m-auto items-center mt-4 p-2 sm:w-[90%] lg:w-[80%]"
         >
           <img
             src={item.image}
             alt={item.title}
-            className="h-[80px] w-[80px] rounded-md"
+            className="h-[80px] w-[80px] rounded-md  "
           />
-          <p>{item.title}</p>
+          <p >{item.title}</p>
           <p>{item.price}</p>
           <p className="mx-8">{item.quantity}</p>
-          <p>{item.price * item.quantity}</p>
+          <p className="mx-4">{item.price * item.quantity}</p>
           <ImCross
             onClick={() => removeFromCart(item.id)}
             className="text-red-500 cursor-pointer mx-7"
