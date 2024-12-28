@@ -2,7 +2,7 @@ import React from 'react'
 
 const Services = () => {
   return (
-    <div className='flex flex-col gap-4 w-[50%] m-auto shadow-xl'>
+    <div className='flex flex-col gap-4 w-[90%] m-auto shadow-xl lg:w-[50%]'>
         <h1 className='text-xl p-3 font-semibold text-center'>Services</h1>
         <p className=' p-4 w-full'>Khanal Mart is a one-stop platform offering a wide range of products and convenient services tailored to meet customers' everyday needs. Shoppers can explore categories such as groceries, household essentials, pharmacy items, baby care, pet care, and more. With a user-friendly online platform and mobile app, customers can easily browse, purchase, and track their orders anytime, anywhere. <br />
 

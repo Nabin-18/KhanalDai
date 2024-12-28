@@ -24,7 +24,7 @@ const ColdDrinks = () => {
           </h2>
         )}
       </div>
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
+      <div className="p-4 grid grid-cols-2 sm:grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
         {allProducts
           .filter((item) => item.category === "drinks")
           .slice(0, visibleItems) // Show only the items up to `visibleItems`
