@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Card from "../component/Card";
 import allProducts from "../assets/allProduct";
 import { FaArrowRight } from "react-icons/fa6";
+import RelatedProduct from "./RelatedProduct";
 
 const SearchPages = () => {
   const location = useLocation();
@@ -13,6 +14,11 @@ const SearchPages = () => {
   const filteredProducts = allProducts.filter((item) =>
     query ? item.title.toLowerCase().includes(query.toLowerCase()) : true
   );
+
+  // Extract unique categories from filtered products
+  const filteredCategories = [
+    ...new Set(filteredProducts.map((item) => item.category)),
+  ];
 
   const handleSeeMore = () => {
     setVisibleItems(filteredProducts.length);
@@ -56,6 +62,7 @@ const SearchPages = () => {
           </p>
         )}
       </div>
+      <RelatedProduct currentCategories={filteredCategories} />
     </div>
   );
 };

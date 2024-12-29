@@ -1,4 +1,4 @@
-import { FaStar } from "react-icons/fa";
+import ReactStars from "react-stars";
 import { useState, useEffect } from "react";
 import Button from "./Button";
 import { useParams } from "react-router-dom";
@@ -24,6 +24,7 @@ const ProductDisplay = () => {
   const [zoomed, setZoomed] = useState(false);
   const [zoomStyle, setZoomStyle] = useState({ top: "0%", left: "0%" });
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+  const [userRating, setUserRating] = useState(0); // State to store user rating
 
   // Update the screen size on resize
   useEffect(() => {
@@ -71,8 +72,12 @@ const ProductDisplay = () => {
     }
   };
 
+  const ratingChanged = (newRating) => {
+    setUserRating(newRating); // Update the rating state
+  };
+
   return (
-    <div className="flex shadow-md h-fit w-[80%] m-auto my-4 border justify-between flex-col md:flex-col lg:flex-row ">
+    <div className="flex shadow-md h-fit w-[80%] m-auto my-4 border justify-between flex-col md:flex-col lg:flex-row">
       {/* Left Section */}
       <div
         className="w-[100%] flex flex-col item-center p-8 gap-4 border relative lg:w-[50%]"
@@ -122,12 +127,13 @@ const ProductDisplay = () => {
         <div className="flex gap-3 items-center">
           <h1 className="text-xl font-semibold">Ratings :</h1>
           <p className="flex gap-3">
-            {new Array(5).fill(null).map((_, index) => (
-              <FaStar
-                key={index}
-                className="text-xl text-orange-400 cursor-pointer"
-              />
-            ))}
+            <ReactStars
+              className="flex gap-2 font-semibold text-2xl"
+              count={5}
+              onChange={ratingChanged}
+              size={24}
+              color2={"#ffd700"}
+            />
           </p>
         </div>
         <div>
@@ -169,6 +175,13 @@ const ProductDisplay = () => {
         <div className="text-center mt-4">
           <h1 className="text-xl font-semibold">Description :</h1>
           <p className="p-3">{productData.description}</p>
+        </div>
+        {/* Display User Rating */}
+        <div className="text-center mt-4">
+          <h1 className="text-xl font-semibold">Your Rating:</h1>
+          <p className="text-lg">
+            {userRating > 0 ? `${userRating} Stars` : "No rating given yet."}
+          </p>
         </div>
       </div>
     </div>
