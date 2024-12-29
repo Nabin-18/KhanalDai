@@ -1,5 +1,5 @@
 import { FaStar } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "./Button";
 import { useParams } from "react-router-dom";
 import allProducts from "../assets/allProduct";
@@ -20,12 +20,21 @@ const ProductDisplay = () => {
     return <div>Product not found</div>;
   }
 
-  console.log(productData);
-  console.log(productData.id);
-
   const [counter, setCounter] = useState(1); // Start with 1 item by default
   const [zoomed, setZoomed] = useState(false);
   const [zoomStyle, setZoomStyle] = useState({ top: "0%", left: "0%" });
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+
+  // Update the screen size on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const increment = () => {
     setCounter(counter + 1);
@@ -38,26 +47,28 @@ const ProductDisplay = () => {
   };
 
   const handleMouseEnter = () => {
-    setZoomed(true);
+    if (isLargeScreen) setZoomed(true);
   };
 
   const handleMouseLeave = () => {
-    setZoomed(false);
+    if (isLargeScreen) setZoomed(false);
   };
 
   const handleMouseMove = (e) => {
-    const img = e.target;
-    const { left, top, width, height } = img.getBoundingClientRect();
-    const x = e.clientX - left;
-    const y = e.clientY - top;
+    if (isLargeScreen) {
+      const img = e.target;
+      const { left, top, width, height } = img.getBoundingClientRect();
+      const x = e.clientX - left;
+      const y = e.clientY - top;
 
-    const xPercent = (x / width) * 100;
-    const yPercent = (y / height) * 100;
+      const xPercent = (x / width) * 100;
+      const yPercent = (y / height) * 100;
 
-    setZoomStyle({
-      left: `${xPercent}%`,
-      top: `${yPercent}%`,
-    });
+      setZoomStyle({
+        left: `${xPercent}%`,
+        top: `${yPercent}%`,
+      });
+    }
   };
 
   return (
@@ -76,7 +87,7 @@ const ProductDisplay = () => {
             alt={productData.title}
           />
         </div>
-        {zoomed && (
+        {zoomed && isLargeScreen && (
           <div
             className="absolute top-0 right-[-650px] border-2 shadow-md bg-white overflow-hidden"
             style={{
@@ -148,7 +159,10 @@ const ProductDisplay = () => {
         </div>
         <div className="flex gap-4 mt-4">
           <Button
-            onClick={() => addToCart(productData, counter)}
+            onClick={() => {
+              addToCart(productData, counter);
+              window.scrollTo({ top: 0, behavior: "smooth" }); // Scrolls to the top smoothly
+            }}
             text="Add to Cart"
           />
         </div>

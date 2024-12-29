@@ -8,7 +8,8 @@ const AddToCart = () => {
 
   return (
     <div className="shadow-xl">
-      <div className=" grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 justify-between w-[80%] m-auto  mt-6 font-semibold">
+      {/* Header Row for medium and large devices */}
+      <div className="hidden sm:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 justify-between w-[90%] m-auto mt-6 font-semibold lg:w-[80%]">
         <p>Product</p>
         <p>Title</p>
         <p>Price</p>
@@ -16,35 +17,69 @@ const AddToCart = () => {
         <p>Total</p>
         <p>Remove</p>
       </div>
-      <hr className="m-auto w-[98%] divide-red-600  mt-6 lg:w-[80%]" />
+      <hr className="m-auto w-[98%] mt-6 lg:w-[80%]" />
+
+      {/* Cart Items */}
       {cartItems.map((item) => (
         <div
           key={item.id}
-          className=" grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-2 justify-between w-[80%] m-auto items-center mt-4 p-2 sm:w-[90%] lg:w-[80%]"
+          className="flex flex-col gap-4 p-4 shadow-md rounded-md w-[90%] m-auto mt-4 sm:grid sm:grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] sm:gap-2 sm:justify-between sm:items-center sm:shadow-none sm:rounded-none lg:w-[80%]"
         >
-          <img
-            src={item.image}
-            alt={item.title}
-            className="h-[80px] w-[80px] rounded-md  "
-          />
-          <p >{item.title}</p>
-          <p>{item.price}</p>
-          <p className="mx-8">{item.quantity}</p>
-          <p className="mx-4">{item.price * item.quantity}</p>
+          {/* Product Image */}
+          <div className="flex items-center gap-4 sm:gap-0">
+            <img
+              src={item.image}
+              alt={item.title}
+              className="h-[80px] w-[80px] rounded-md"
+            />
+            <p className="text-sm sm:hidden font-semibold">{item.title}</p>
+          </div>
+
+          {/* Product Details for small devices */}
+          <div className="flex flex-col gap-2 sm:hidden">
+            <div>
+              <span className="font-semibold">Title: </span>
+              {item.title}
+            </div>
+            <div>
+              <span className="font-semibold">Price: </span>NRS {item.price}
+            </div>
+            <div>
+              <span className="font-semibold">Quantity: </span>
+              {item.quantity}
+            </div>
+            <div>
+              <span className="font-semibold">Total: </span>NRS{" "}
+              {item.price * item.quantity}
+            </div>
+          </div>
+
+          {/* Product Details for medium and large devices */}
+          <p className="hidden sm:block">{item.title}</p>
+          <p className="hidden sm:block">{item.price}</p>
+          <p className="hidden sm:block mx-8">{item.quantity}</p>
+          <p className="hidden sm:block mx-4">
+            {item.price * item.quantity}
+          </p>
+
+          {/* Remove Button */}
           <ImCross
             onClick={() => removeFromCart(item.id)}
-            className="text-red-500 cursor-pointer mx-7"
+            className="text-red-500 cursor-pointer mx-auto sm:mx-7"
           />
         </div>
       ))}
-      <hr />
-      <div className="w-[90%] m-auto bg-gray-200  p-2 flex flex-col items-center gap-2 lg:w-[30%]">
-        <h1 className="text-xl font-semibold text-center p-3">Cart total</h1>
-        <p className="text-xl font-semibold">
+
+      <hr className="m-auto w-[98%] mt-6 lg:w-[80%]" />
+
+      {/* Cart Summary */}
+      <div className="w-[90%] m-auto bg-gray-200 p-4 flex flex-col items-center gap-4 mt-6 rounded-md lg:w-[30%]">
+        <h1 className="text-xl font-semibold text-center">Cart Total</h1>
+        <p className="text-lg font-semibold">
           Subtotal: NRS {calculateTotal()}
         </p>
-        <p className="text-xl font-semibold">Shipping fee: NRS 0</p>
-        <p className="text-xl font-semibold">Total: NRS {calculateTotal()}</p>
+        <p className="text-lg font-semibold">Shipping Fee: NRS 0</p>
+        <p className="text-lg font-semibold">Total: NRS {calculateTotal()}</p>
         <Button text="Pay Now" className="mt-3" />
       </div>
     </div>

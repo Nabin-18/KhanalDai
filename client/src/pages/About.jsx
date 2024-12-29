@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const About = () => {
+  // Scroll to top when the component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="flex shadow-xl w-[90%] m-auto flex-col md:w-[90%] lg:w-[60%] ">
       <h1 className="text-3xl font-semibold m-4">About Us</h1>
