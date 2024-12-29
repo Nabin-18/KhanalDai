@@ -7,7 +7,7 @@ const Card = ({ title, price, description, category, image, id }) => {
         <div className="flex items-center m-auto">
           <img
             src={image}
-            className="object-cover transition-transform duration-300 group-hover:scale-110 h-[100px] w-[120px]  rounded-md lg:h-[200px] w-[200px] md:h-[200px] "
+            className="object-cover transition-transform duration-300 group-hover:scale-110 h-[100px]  rounded-md lg:h-[200px]  md:h-[200px] "
           />
         </div>
 
