@@ -9,30 +9,30 @@ import EditProduct from "../pages/EditProduct";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <App />, // App is the root route
     children: [
       {
-        path: "/",
+        index: true, // Default child route
         element: <Login />,
       },
       {
-        path: "/home",
+        path: "home", // Nested route for Home
         element: <Home />,
-        
       },
       {
-        path: "/addtoproduct",
+        path: "addtoproduct", // Nested route for AddProduct
         element: <AddProduct />,
       },
       {
-        path: "/allproduct",
+        path: "allproduct", // Nested route for Allproduct
         element: <Allproduct />,
       },
       {
-        path: "/editproduct",
+        path: "editproduct", // Nested route for EditProduct
         element: <EditProduct />,
-      }
+      },
     ],
   },
 ]);
+
 export default router;

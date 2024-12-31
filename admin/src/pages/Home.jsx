@@ -7,7 +7,7 @@ const Home = () => {
     <>
       <Navbar />
       <div className="flex">
-        <Sidebar />
+        <Sidebar  />
         <Outlet />
       </div>
     </>

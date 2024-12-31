@@ -4,8 +4,8 @@ import { FaShoppingCart } from "react-icons/fa";
 
 const Sidebar = () => {
   return (
-    <div className="w-[18%] h-screen shadow-2xl bg-gray-100">
-      <div className="flex flex-col items-center w-full p-4">
+    <div className="  shadow-2xl bg-gray-100 h-screen w-[18%]">
+      <div className="flex items-center w-full p-4 flex-col">
         {/* Add Product Link */}
         <div className="flex items-center bg-green-600 p-2 m-4 rounded-md w-full">
           <Link
