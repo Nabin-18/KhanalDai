@@ -1,59 +1,65 @@
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useState } from "react";
+import React, { useState, useContext } from "react";
+import Context from "../context/Context";
+import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for password visibility toggle
 
 const Login = () => {
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const { login } = useContext(Context); // Access the login function from context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "", invalidCredentials: "" });
+  const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    invalidCredentials: "",
+  });
+  const [successMessage, setSuccessMessage] = useState(""); // State for success message
+  const navigate = useNavigate();
 
-  const togglePasswordVisibility = (e) => {
-    e.preventDefault();
-    setPasswordVisible((prevState) => !prevState);
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible); // Toggle the password visibility
   };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 8;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let valid = true;
-    const newErrors = { email: "", password: "", invalidCredentials: "" };
-
-    if (!validateEmail(email)) {
-      newErrors.email = "Please enter a valid email address.";
-      valid = false;
+    // Validation logic here...
+    if (!email || !password) {
+      setErrors({ ...errors, invalidCredentials: "Please fill in all fields" });
+      return;
     }
 
-    if (!validatePassword(password)) {
-      newErrors.password = "Password must be at least 8 characters long.";
-      valid = false;
-    }
+    try {
+      const response = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // Simulate a check for valid credentials (for example, hardcoded credentials)
-    const correctEmail = "test@example.com";
-    const correctPassword = "password123";
-
-    if (valid) {
-      if (email !== correctEmail || password !== correctPassword) {
-        newErrors.invalidCredentials = "Invalid email or password.";
-        valid = false;
+      if (response.ok) {
+        const data = await response.json();
+        // Assume the token is returned on successful login
+        localStorage.setItem("userToken", data.token); // Store token in localStorage
+        login(); // Update context state to logged in
+        setSuccessMessage("Login successful! Redirecting..."); // Show success message
+        setTimeout(() => {
+          navigate("/"); // Navigate to home page
+        }, 2000);
+      } else {
+        const errorData = await response.json();
+        setErrors({
+          ...errors,
+          invalidCredentials: errorData.message || "Invalid credentials",
+        });
       }
-    }
-
-    setErrors(newErrors);
-
-    if (valid) {
-      console.log("Form Submitted");
-      console.log("Email:", email);
-      console.log("Password:", password);
+    } catch (error) {
+      console.error("Login failed:", error);
+      setErrors({
+        ...errors,
+        invalidCredentials: "An error occurred during login.",
+      });
     }
   };
 
@@ -116,7 +122,14 @@ const Login = () => {
 
             {/* Invalid Credentials Error */}
             {errors.invalidCredentials && (
-              <p className="text-red-500 text-sm mt-2">{errors.invalidCredentials}</p>
+              <p className="text-red-500 text-sm mt-2">
+                {errors.invalidCredentials}
+              </p>
+            )}
+
+            {/* Success Message */}
+            {successMessage && (
+              <p className="text-green-500 text-sm mt-2">{successMessage}</p>
             )}
 
             {/* Submit Button */}

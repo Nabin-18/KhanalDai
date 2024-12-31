@@ -1,5 +1,6 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 
 const SignUp = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -7,6 +8,8 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState(""); // For success message
+  const navigate = useNavigate(); // Initialize navigate for redirection
 
   const togglePasswordVisibility = (e) => {
     e.preventDefault();
@@ -22,7 +25,7 @@ const SignUp = () => {
     return password.length >= 8;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -41,19 +44,57 @@ const SignUp = () => {
     setErrors(newErrors);
 
     if (valid) {
-      console.log("Form Submitted");
-      console.log("Name:", name);
-      console.log("Email:", email);
-      console.log("Password:", password);
+      try {
+        const response = await signUp(name, email, password);
+
+        if (response.ok) {
+          const data = await response.json();
+          setMessage(data.message || "User signed up successfully!");
+          setTimeout(() => {
+            navigate("/login"); // Redirect to login page after 2 seconds
+          }, 2000);
+        } else {
+          const errorData = await response.json();
+          setMessage(
+            errorData.message || "An error occurred during registration."
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        setMessage("An error occurred during registration.");
+      }
     }
   };
 
+  // Connection to the server
+  const signUp = async (name, email, password) => {
+    return await fetch("http://localhost:3000/api/users/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+  };
+
   return (
-    <div className="flex shadow-2xl h-full w-[90%] m-auto items-center p-8  flex-col mt-4 md:w-[50%] lg:w-[30%] ">
+    <div className="flex shadow-2xl h-full w-[90%] m-auto items-center p-8 flex-col mt-4 md:w-[50%] lg:w-[30%] ">
       <form onSubmit={handleSubmit} className="w-full">
         <div>
           <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
           <div className="flex flex-col w-full gap-4">
+            {message && (
+              <p
+                className={`text-center ${
+                  message.includes("successfully")
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {message}
+              </p>
+            )}
+
             {/* Name Input */}
             <label>
               <span className="font-semibold">Name:</span>

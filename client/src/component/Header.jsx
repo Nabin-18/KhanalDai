@@ -7,7 +7,7 @@ import Button from "./Button";
 import Search from "./Search";
 
 const Header = () => {
-  const { cartItems } = useContext(Context);
+  const { cartItems, isLoggedIn, logout } = useContext(Context);
 
   // Calculate the total number of items in the cart
   const totalCartItems = cartItems.reduce(
@@ -36,15 +36,23 @@ const Header = () => {
 
       {/* Buttons Section */}
       <div className="flex gap-4 mx-6 m-auto p-4 items-center justify-center">
-        <Link to="/signup">
-          <Button text="SignUp" />
-        </Link>
+        {/* Conditional Button: Show "SignUp" if not logged in, "LogOut" if logged in */}
+        {!isLoggedIn ? (
+          <Link to="/signup">
+            <Button text="SignUp" />
+          </Link>
+        ) : (
+          <button onClick={logout}>
+            <Button text="LogOut" />
+          </button>
+        )}
+
         <div className="flex items-center relative">
           <Link to="/addtoCart">
             <Button icon={<IoMdCart className="text-2xl " />} text="Cart" />
           </Link>
           <span className="bg-red-600 text-white font-serif font-semibold rounded-full h-6 w-6 text-center absolute right-0 top-[-8px]">
-            {totalCartItems }
+            {totalCartItems}
             {/* Display the total number of items in the cart */}
           </span>
         </div>
@@ -52,4 +60,5 @@ const Header = () => {
     </div>
   );
 };
+
 export default Header;

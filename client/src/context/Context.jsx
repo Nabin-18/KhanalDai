@@ -3,6 +3,8 @@ import { createContext, useState, useEffect } from "react";
 const Context = createContext();
 
 export const ContextProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+
   // Initialize cartItems from local storage
   const [cartItems, setCartItems] = useState(() => {
     const storedCart = localStorage.getItem("cart");
@@ -11,6 +13,15 @@ export const ContextProvider = ({ children }) => {
 
     //JSON.parse('[{"id":1,"title":"Product A","quantity":2}]') => [{id: 1, title: "Product A", quantity: 2}]
   });
+  const login = () => {
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    // Clear any session-related data (e.g., token from localStorage)
+    localStorage.removeItem("userToken"); // Assuming you're using a token-based auth
+  };
 
   // Save cart to local storage whenever it changes
   useEffect(() => {
@@ -52,7 +63,15 @@ export const ContextProvider = ({ children }) => {
 
   return (
     <Context.Provider
-      value={{ cartItems, addToCart, removeFromCart, calculateTotal }}
+      value={{
+        isLoggedIn,
+        login,
+        logout,
+        cartItems,
+        addToCart,
+        removeFromCart,
+        calculateTotal,
+      }}
     >
       {children}
     </Context.Provider>
