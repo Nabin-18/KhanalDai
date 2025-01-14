@@ -1,8 +1,10 @@
 import { useState } from "react";
+import UploadWidget from "./UploadWidget";
 
 const AddProduct = () => {
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+
+  console.log("image", image);
   const [product, setProduct] = useState({
     name: "",
     category: "",
@@ -10,6 +12,7 @@ const AddProduct = () => {
     quantity: "",
     description: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -19,14 +22,6 @@ const AddProduct = () => {
       ...product,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleImage = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -51,18 +46,28 @@ const AddProduct = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    const formData = new FormData();
-    formData.append("name", product.name);
-    formData.append("category", product.category);
-    formData.append("price", product.price);
-    formData.append("quantity", product.quantity);
-    formData.append("description", product.description);
-    formData.append("image", image);
-
     try {
+      console.log({
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        quantity: product.quantity,
+        description: product.description,
+        image: image,
+      });
       const response = await fetch("http://localhost:3000/api/products/add", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: product.name,
+          category: product.category,
+          price: product.price,
+          quantity: product.quantity,
+          description: product.description,
+          image: image,
+        }),
       });
 
       const data = await response.json();
@@ -78,7 +83,6 @@ const AddProduct = () => {
           description: "",
         });
         setImage(null);
-        setImagePreview(null);
       } else {
         setErrorMessage(
           data.message || "Something went wrong. Please try again."
@@ -120,6 +124,7 @@ const AddProduct = () => {
             <option value="pharmacy">Pharmacy</option>
             <option value="pet_care">Pet Care</option>
             <option value="baby_care">Baby Care</option>
+            <option value="drinks">Drinks</option>
           </select>
           <input
             type="text"
@@ -144,21 +149,8 @@ const AddProduct = () => {
             placeholder="Description"
             className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none mb-4 w-full"
           />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImage}
-            className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none mb-4 w-full"
-          />
-          {imagePreview && (
-            <div className="mb-4">
-              <img
-                src={imagePreview}
-                alt="Selected Product"
-                className="w-full h-64 object-cover rounded-lg shadow-md"
-              />
-            </div>
-          )}
+
+          <UploadWidget setImageUrl={setImage} />
           {errorMessage && (
             <p className="text-red-500 text-sm">{errorMessage}</p>
           )}

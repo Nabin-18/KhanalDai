@@ -7,6 +7,11 @@ import signUpRouter from "./routes/signUp.js";
 import loginRouter from "./routes/login.js";
 import getProductrouter from "./routes/getProduct.js";
 import deleteProductrouter from "./routes/deleteProduct.js";
+import addtoCartRouter from "./routes/addtoCart.js";
+import removeFromCartRouter from "./routes/removefromCart.js";
+import getCartDataRouter from "./routes/getcartData.js";
+import productDisplay from "./routes/productDisplay.js";
+
 
 dotenv.config();
 
@@ -26,15 +31,17 @@ app.use("/api/users", signUpRouter);
 app.use("/api/users", loginRouter);
 app.use("/api/products", getProductrouter);
 app.use("/uploads", express.static("uploads"));
-
 app.use("/api/products", deleteProductrouter);
-
-
+app.use("/api/products", addtoCartRouter);
+app.use("/api/products", removeFromCartRouter);
+app.use("/api/products", getCartDataRouter);
+app.use("/api/products", productDisplay);
 
 // Default route
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;

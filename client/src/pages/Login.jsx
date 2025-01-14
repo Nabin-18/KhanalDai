@@ -1,9 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Context from "../context/Context";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for password visibility toggle
+import useUser from "../hooks/useUser";
 
 const Login = () => {
+  const isLoggedIn = useUser();
   const { login } = useContext(Context); // Access the login function from context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,6 +64,12 @@ const Login = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/"); // Redirect to home page if already logged in
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div className="flex shadow-2xl h-full w-[90%] m-auto items-center p-8 flex-col mt-4 md:w-[50%] lg:w-[30%] ">

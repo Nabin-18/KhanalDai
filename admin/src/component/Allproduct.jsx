@@ -6,12 +6,17 @@ const AllProduct = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/products/getproduct")
+    fetch("http://localhost:3000/api/products/getproduct", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
       });
-  }, []); 
+  }, []);
 
   // Delete product from the database
   const deleteProduct = (id) => {
@@ -47,11 +52,12 @@ const AllProduct = () => {
           >
             <div>
               <img
-                src={`http://localhost:3000${product.imageUrl}`}
+                src={product.imageUrl}
                 alt={product.name}
                 className="h-[80px] w-[80px] border rounded-md"
               />
             </div>
+
             <div>
               <h1>{product.name}</h1>
             </div>

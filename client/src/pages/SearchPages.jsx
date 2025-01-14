@@ -1,18 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Card from "../component/Card";
-import allProducts from "../assets/allProduct";
+// import allProducts from "../assets/allProduct";
 import { FaArrowRight } from "react-icons/fa6";
 import RelatedProduct from "./RelatedProduct";
 
 const SearchPages = () => {
+  const [allProducts, setAllProducts] = useState([]);
   const location = useLocation();
   const { query } = location.state || {}; // Get search query from state
   const [visibleItems, setVisibleItems] = useState(5);
 
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products/getproduct", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAllProducts(data);
+      });
+  }, []);
+
   // Filter products based on search query
   const filteredProducts = allProducts.filter((item) =>
-    query ? item.title.toLowerCase().includes(query.toLowerCase()) : true
+    query ? item.name.toLowerCase().includes(query.toLowerCase()) : true
   );
 
   // Extract unique categories from filtered products
@@ -47,14 +61,15 @@ const SearchPages = () => {
           .slice(0, visibleItems) // Show only items up to `visibleItems`
           .map((item) => (
             <Card
-              key={item.id}
-              id={item.id}
-              title={item.title}
+              key={item._id} // Changed `key` to use `id` for better performance
+              id={item._id}
+              title={item.name}
               price={item.price}
+              quantity={item.quantity}
               description={item.description}
               category={item.category}
-              image={item.image}
-            />
+              image={item.imageUrl}
+            /> 
           ))}
         {filteredProducts.length === 0 && (
           <p className="col-span-full text-center text-gray-500">

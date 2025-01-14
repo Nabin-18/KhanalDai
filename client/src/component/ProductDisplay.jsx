@@ -1,22 +1,36 @@
 import ReactStars from "react-stars";
 import { useState, useEffect } from "react";
 import Button from "./Button";
-import { useParams } from "react-router-dom";
-import allProducts from "../assets/allProduct";
+import { useParams, useNavigate } from "react-router-dom";
+// import allProducts from "../assets/allProduct";
 import { useContext } from "react";
 import Context from "../context/Context";
+import useUser from "../hooks/useUser";
 
 const ProductDisplay = () => {
   const { addToCart } = useContext(Context);
   const { id } = useParams();
+  const router = useNavigate();
+  //  //fetching data form database
 
-  // Find the product based on ID
-  const productData = allProducts.find(
-    (item) => item.id === Number.parseInt(id)
-  );
+  const isLoggedIn = useUser();
+  const [product, setProduct] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products/productdisplay/" + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setProduct(data);
+      });
+  }, []);
 
   // If the product is not found, handle the error
-  if (!productData) {
+  if (!product) {
     return <div>Product not found</div>;
   }
 
@@ -87,9 +101,9 @@ const ProductDisplay = () => {
       >
         <div className="mt-4 relative">
           <img
-            src={productData.image}
+            src={product.imageUrl}
             className="cursor-pointer h-[300px] w-[300px] border"
-            alt={productData.title}
+            alt={product.title}
           />
         </div>
         {zoomed && isLargeScreen && (
@@ -98,7 +112,7 @@ const ProductDisplay = () => {
             style={{
               height: "500px",
               width: "500px",
-              backgroundImage: `url(${productData.image})`,
+              backgroundImage: `url(${product.imageUrl})`,
               backgroundSize: "200%",
               backgroundPosition: `${zoomStyle.left} ${zoomStyle.top}`,
             }}
@@ -109,7 +123,7 @@ const ProductDisplay = () => {
           {new Array(4).fill(null).map((_, index) => (
             <img
               key={index}
-              src={productData.image}
+              src={product.imageUrl}
               className={`h-20 w-20 cursor-pointer border ${
                 index > 0 ? "hidden sm:block" : "" // Hide all except the first on small screens
               }`}
@@ -122,7 +136,7 @@ const ProductDisplay = () => {
       {/* Right Section */}
       <div className="w-full flex flex-col p-4 items-center gap-4 h-fit">
         <div className="text-center m-4">
-          <h1 className="text-2xl font-semibold">{productData.title}</h1>
+          <h1 className="text-2xl font-semibold">{product.title}</h1>
         </div>
         <div className="flex gap-3 items-center">
           <h1 className="text-xl font-semibold">Ratings :</h1>
@@ -137,14 +151,10 @@ const ProductDisplay = () => {
           </p>
         </div>
         <div>
-          <p className="text-xl font-semibold">
-            Category: {productData.category}
-          </p>
+          <p className="text-xl font-semibold">Category: {product.category}</p>
         </div>
         <div>
-          <p className="text-orange-500 font-semibold">
-            NRS {productData.price}
-          </p>
+          <p className="text-orange-500 font-semibold">NRS {product.price}</p>
         </div>
         <div className="flex items-center gap-3">
           <span className="font-semibold">Quantity:</span>
@@ -166,7 +176,20 @@ const ProductDisplay = () => {
         <div className="flex gap-4 mt-4">
           <Button
             onClick={() => {
-              addToCart(productData, counter);
+              if (!isLoggedIn) {
+                router("/login");
+              }
+              addToCart(
+                product._id,
+                counter,
+                product.price,
+                product.imageUrl,
+                product.name
+              );
+              // Pass product ID and quantity
+              console.log("Adding to cart:", product._id, counter);
+              console.log("Product added to cart");
+
               window.scrollTo({ top: 0, behavior: "smooth" }); // Scrolls to the top smoothly
             }}
             text="Add to Cart"
@@ -174,7 +197,7 @@ const ProductDisplay = () => {
         </div>
         <div className="text-center mt-4">
           <h1 className="text-xl font-semibold">Description :</h1>
-          <p className="p-3">{productData.description}</p>
+          <p className="p-3">{product.description}</p>
         </div>
         {/* Display User Rating */}
         <div className="text-center mt-4">

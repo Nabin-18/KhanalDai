@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import Card from "./Card";
-import allProducts from "../assets/allProduct";
+// import allProducts from "../assets/allProduct";
 
 const PersonalCare = () => {
   const [visibleItems, setVisibleItems] = useState(5); // Initial number of items to show
+
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products/getproduct", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAllProducts(data);
+      });
+  }, []);
 
   // Function to handle "See More" click
   const handleSeeMore = () => {
@@ -35,13 +50,14 @@ const PersonalCare = () => {
           .map((item) => {
             return (
               <Card
-                key={item.id} // Changed `key` to use `id` for better performance
-                id={item.id}
-                title={item.title}
+                key={item._id} // Changed `key` to use `id` for better performance
+                id={item._id}
+                title={item.name}
                 price={item.price}
+                quantity={item.quantity}
                 description={item.description}
                 category={item.category}
-                image={item.image}
+                image={item.imageUrl}
               />
             );
           })}

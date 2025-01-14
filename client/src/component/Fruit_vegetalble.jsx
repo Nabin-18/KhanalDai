@@ -1,21 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import Card from "./Card";
-import allProducts from "../assets/allProduct";
+// import allProducts from "../assets/allProduct";
 
 const Fruit_vegeatble = () => {
-  const [visibleItems, setVisibleItems] = useState(5); // Initial number of items to show
+  const [visibleItems, setVisibleItems] = useState(5);
+
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products/getproduct", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAllProducts(data);
+      });
+  }, []);
 
   // Function to handle "See More" click
   const handleSeeMore = () => {
-    setVisibleItems(allProducts.filter((item) => item.category === "fruit_veg").length);
+    setVisibleItems(
+      allProducts.filter((item) => item.category === "fruit_veg").length
+    );
   };
 
   return (
     <div className="w-[90%] m-auto  h-fit">
       <div className="flex justify-between p-4 ">
         <h1 className="font-semibold text-xl mx-4">Fruits and Vegetable</h1>
-        {visibleItems < allProducts.filter((item) => item.category === "fruit_veg").length && (
+        {visibleItems <
+          allProducts.filter((item) => item.category === "fruit_veg")
+            .length && (
           <h2
             className="text-green-500 flex items-center gap-2 cursor-pointer"
             onClick={handleSeeMore}
@@ -31,13 +50,14 @@ const Fruit_vegeatble = () => {
           .map((item) => {
             return (
               <Card
-                key={item.id} // Changed `key` to use `id` for better performance
-                id={item.id}
-                title={item.title}
+                key={item._id} // Changed `key` to use `id` for better performance
+                id={item._id}
+                title={item.name}
                 price={item.price}
+                quantity={item.quantity}
                 description={item.description}
                 category={item.category}
-                image={item.image}
+                image={item.imageUrl}
               />
             );
           })}

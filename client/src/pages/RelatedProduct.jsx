@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import Card from "../component/Card";
-import allProducts from "../assets/allProduct";
+// import allProducts from "../assets/allProduct";
 
 const RelatedProduct = ({ currentCategories }) => {
   const [visibleItems, setVisibleItems] = useState(5);
+
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products/getproduct", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAllProducts(data);
+      });
+  }, []);
 
   // Filter products by the current categories
   const relatedProducts = allProducts.filter((item) =>
@@ -32,13 +47,14 @@ const RelatedProduct = ({ currentCategories }) => {
       <div className="p-4 grid grid-cols-2 sm:grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
         {relatedProducts.slice(0, visibleItems).map((item) => (
           <Card
-            key={item.id}
-            id={item.id}
-            title={item.title}
+            key={item._id} // Changed `key` to use `id` for better performance
+            id={item._id}
+            title={item.name}
             price={item.price}
+            quantity={item.quantity}
             description={item.description}
             category={item.category}
-            image={item.image}
+            image={item.imageUrl}
           />
         ))}
       </div>

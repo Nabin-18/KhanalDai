@@ -1,21 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import Card from "./Card";
-import allProducts from "../assets/allProduct";
 
 const ColdDrinks = () => {
   const [visibleItems, setVisibleItems] = useState(5); // Initial number of items to show
 
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products/getproduct", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAllProducts(data);
+      });
+  }, []);
+
   // Function to handle "See More" click
   const handleSeeMore = () => {
-    setVisibleItems(allProducts.filter((item) => item.category === "drinks").length);
+    setVisibleItems(
+      allProducts.filter((item) => item.category === "drinks").length
+    );
   };
 
   return (
     <div className="w-[90%] m-auto  h-fit">
       <div className="flex justify-between p-4 ">
         <h1 className="font-semibold text-xl mx-4">Cold Drinks, Juice</h1>
-        {visibleItems < allProducts.filter((item) => item.category === "drinks").length && (
+        {visibleItems <
+          allProducts.filter((item) => item.category === "drinks").length && (
           <h2
             className="text-green-500 flex items-center gap-2 cursor-pointer"
             onClick={handleSeeMore}
@@ -29,15 +46,17 @@ const ColdDrinks = () => {
           .filter((item) => item.category === "drinks")
           .slice(0, visibleItems) // Show only the items up to `visibleItems`
           .map((item) => {
+            console.log({ id: item._id });
             return (
               <Card
-                key={item.id} // Changed `key` to use `id` for better performance
-                id={item.id}
-                title={item.title}
+                key={item._id} // Changed `key` to use `id` for better performance
+                id={item._id}
+                title={item.name}
                 price={item.price}
+                quantity={item.quantity}
                 description={item.description}
                 category={item.category}
-                image={item.image}
+                image={item.imageUrl}
               />
             );
           })}

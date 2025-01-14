@@ -1,10 +1,35 @@
 import { ImCross } from "react-icons/im";
 import Button from "../component/Button";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Context from "../context/Context";
 
 const AddToCart = () => {
-  const { removeFromCart, cartItems, calculateTotal } = useContext(Context);
+  const { removeFromCart, cartItems, setCartItems, calculateTotal } =
+    useContext(Context);
+  // State to store cart items
+
+  // Fetch cart data from server
+  const getCartData = () => {
+    fetch(`http://localhost:3000/api/products/getcartdata/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("userToken"),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.cartItems) {
+          setCartItems(data.cartItems); // Update cart items from server response
+        }
+      })
+      .catch((err) => console.error("Error fetching cart data:", err));
+  };
+
+  // Fetch cart data on component mount
+  useEffect(() => {
+    getCartData();
+  }, []);
 
   return (
     <div className="shadow-xl">
@@ -20,26 +45,28 @@ const AddToCart = () => {
       <hr className="m-auto w-[98%] mt-6 lg:w-[80%]" />
 
       {/* Cart Items */}
+
+      {console.log(cartItems)}
       {cartItems.map((item) => (
         <div
-          key={item.id}
+          key={item._id}
           className="flex flex-col gap-4 p-4 shadow-md rounded-md w-[90%] m-auto mt-4 sm:grid sm:grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] sm:gap-2 sm:justify-between sm:items-center sm:shadow-none sm:rounded-none lg:w-[80%]"
         >
           {/* Product Image */}
           <div className="flex items-center gap-4 sm:gap-0">
             <img
-              src={item.image}
-              alt={item.title}
+              src={item.imageUrl}
+              alt={item.name}
               className="h-[80px] w-[80px] rounded-md"
             />
-            <p className="text-sm sm:hidden font-semibold">{item.title}</p>
+            <p className="text-sm sm:hidden font-semibold">{item.name}</p>
           </div>
 
           {/* Product Details for small devices */}
           <div className="flex flex-col gap-2 sm:hidden">
             <div>
               <span className="font-semibold">Title: </span>
-              {item.title}
+              {item.name}
             </div>
             <div>
               <span className="font-semibold">Price: </span>NRS {item.price}
@@ -55,16 +82,17 @@ const AddToCart = () => {
           </div>
 
           {/* Product Details for medium and large devices */}
-          <p className="hidden sm:block">{item.title}</p>
+          <p className="hidden sm:block">{item.name}</p>
           <p className="hidden sm:block">{item.price}</p>
           <p className="hidden sm:block mx-8">{item.quantity}</p>
-          <p className="hidden sm:block mx-4">
-            {item.price * item.quantity}
-          </p>
+          <p className="hidden sm:block mx-4">{item.price * item.quantity}</p>
 
           {/* Remove Button */}
           <ImCross
-            onClick={() => removeFromCart(item.id)}
+            onClick={() => {
+              console.log("Removing item:", item.productId);
+              removeFromCart(item.productId);
+            }}
             className="text-red-500 cursor-pointer mx-auto sm:mx-7"
           />
         </div>

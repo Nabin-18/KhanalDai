@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Card = ({ title, price, description, category, image, id }) => {
+const Card = ({ title, price, description, category, image, id, quantity }) => {
   return (
     <Link to={`/product/${id}`}>
       <div className="flex flex-col border p-4 shadow-lg gap-3 cursor-pointer group ">
@@ -15,8 +15,9 @@ const Card = ({ title, price, description, category, image, id }) => {
           <h1 className="font-semibold">{title} </h1>
         </div>
 
-        <div>
+        <div className="flex justify-between items-center">
           <p className="text-sm text-slate-400">{description}</p>
+          <p className="text-sm font-semibold text-green-500">{quantity} </p>
         </div>
         <div className="flex justify-between items-center">
           <p className="text-sm font-semibold ">NRS {price} </p>

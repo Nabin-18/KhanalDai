@@ -5,16 +5,18 @@ import { IoMdCart } from "react-icons/io";
 import Context from "../context/Context";
 import Button from "./Button";
 import Search from "./Search";
+import useUser from "../hooks/useUser";
 
 const Header = () => {
   const { cartItems, isLoggedIn, logout } = useContext(Context);
 
-  // Calculate the total number of items in the cart
-  const totalCartItems = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const user = useUser();
+  console.log("My cart items in Header", cartItems);
 
+  // Calculate the total number of items in the cart
+  const totalCartItems = Array.isArray(cartItems)
+    ? cartItems.reduce((acc, item) => acc + item.quantity, 0)
+    : 0;
   return (
     <div className="h-fit shadow-md md:flex justify-between items-center px-4 sm:h-fit m-auto md:h-fit lg:h-[80px]">
       {/* Logo Section */}
@@ -46,16 +48,17 @@ const Header = () => {
             <Button text="LogOut" />
           </button>
         )}
-
-        <div className="flex items-center relative">
-          <Link to="/addtoCart">
-            <Button icon={<IoMdCart className="text-2xl " />} text="Cart" />
-          </Link>
-          <span className="bg-red-600 text-white font-serif font-semibold rounded-full h-6 w-6 text-center absolute right-0 top-[-8px]">
-            {totalCartItems}
-            {/* Display the total number of items in the cart */}
-          </span>
-        </div>
+        {user && (
+          <div className="flex items-center relative">
+            <Link to="/addtoCart">
+              <Button icon={<IoMdCart className="text-2xl " />} text="Cart" />
+            </Link>
+            <span className="bg-red-600 text-white font-serif font-semibold rounded-full h-6 w-6 text-center absolute right-0 top-[-8px]">
+              {totalCartItems}
+              {/* Display the total number of items in the cart */}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
