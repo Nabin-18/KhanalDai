@@ -11,6 +11,7 @@ import Pharmacy from "../pages/Pharmacy";
 import PetCare from "../pages/PetCare";
 import BabyCare from "../pages/BabyCare";
 import Services from "../pages/Services";
+import PaymentSuccess from "../pages/success";
 
 const router = createBrowserRouter([
   {
@@ -61,7 +62,11 @@ const router = createBrowserRouter([
       {
         path: "/services",
         element: <Services />,
-      }
+      },
+      {
+        path: "/success",
+        element: <PaymentSuccess />,
+      },
     ],
   },
 ]);

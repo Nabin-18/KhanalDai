@@ -31,6 +31,28 @@ const AddToCart = () => {
     getCartData();
   }, []);
 
+  const handlePayment = async () => {
+    // Implement payment logic here
+    console.log("Payment initiated");
+    const response = await fetch("http://localhost:3000/api/pay", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("userToken"),
+      },
+      body: JSON.stringify({ amount: calculateTotal() * 100 }),
+    });
+    const data = await response.json();
+    if (!data.paymentUrl) {
+      console.error("Error fetching payment URL:", data);
+      return;
+    }
+
+    window.location.href = data.paymentUrl.payment_url;
+
+    // Handle the response from the payment API
+  };
+
   return (
     <div className="shadow-xl">
       {/* Header Row for medium and large devices */}
@@ -108,7 +130,14 @@ const AddToCart = () => {
         </p>
         <p className="text-lg font-semibold">Shipping Fee: NRS 0</p>
         <p className="text-lg font-semibold">Total: NRS {calculateTotal()}</p>
-        <Button text="Pay Now" className="mt-3" />
+        <Button
+          text="Pay Now"
+          className="mt-3"
+          onClick={() => {
+            handlePayment();
+            console.log("Payment button clicked");
+          }}
+        ></Button>
       </div>
     </div>
   );

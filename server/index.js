@@ -11,6 +11,7 @@ import addtoCartRouter from "./routes/addtoCart.js";
 import removeFromCartRouter from "./routes/removefromCart.js";
 import getCartDataRouter from "./routes/getcartData.js";
 import productDisplay from "./routes/productDisplay.js";
+import payRouter from "./routes/pay.js";
 
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use("/api/products", addtoCartRouter);
 app.use("/api/products", removeFromCartRouter);
 app.use("/api/products", getCartDataRouter);
 app.use("/api/products", productDisplay);
+app.use("/api/pay", payRouter);
 
 // Default route
 app.get("/", (req, res) => {
